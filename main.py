@@ -1,6 +1,8 @@
 # Create a FastAPI instance
 from fastapi import FastAPI, Query
 import mysql.connector
+import os
+import uvicorn
 
 
 app = FastAPI(title="Employee Search API", description="API for searching employee details in a database")
@@ -68,6 +70,10 @@ def search_employees(
     if NumberOfVehicles is not None:
         query += " AND NumberOfVehicles = %s"
         params.append(NumberOfVehicles)
+
+    if __name__ == "__main__":
+        port = int(os.getenv("PORT", 8000))
+        uvicorn.run("main:app", host="0.0.0.0", port=port)
 
     cursor.execute(query, params)
     results = cursor.fetchall()
