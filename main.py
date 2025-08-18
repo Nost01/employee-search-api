@@ -71,10 +71,6 @@ def search_employees(
         query += " AND NumberOfVehicles = %s"
         params.append(NumberOfVehicles)
 
-    if __name__ == "__main__":
-        port = int(os.getenv("PORT", 8000))
-        uvicorn.run("main:app", host="0.0.0.0", port=port)
-
     cursor.execute(query, params)
     results = cursor.fetchall()
 
