@@ -1,18 +1,19 @@
 # Create a FastAPI instance
 from fastapi import FastAPI, Query
+from dotenv import load_dotenv
 import mysql.connector
 import os
 import uvicorn
 
-
+load_dotenv("variables.env")
 app = FastAPI(title="Employee Search API", description="API for searching employee details in a database")
 
 def get_db_connection():
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Jackal0309!",
-        database="nesthealthcentre"
+        host=os.getenv("DB_HOST", "localhost"),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", ""),
+        database=os.getenv("DB_NAME", "nesthealthcentre")
     )
 
 # Search Endpoints
@@ -41,32 +42,32 @@ def search_employees(
 
     # Filters based on provided parameters
     if FirstName:
-        query += " AND FirstName LIKE %s"
-        params.append(f"%{FirstName}%")
+        query += " AND LOWER(FirstName) LIKE %s"
+        params.append(f"%{FirstName.strip().lower()}%")
     if LastName:
-        query += " AND LastName LIKE %s"
-        params.append(f"%{LastName}%")
+        query += " AND LOWER(LastName) LIKE %s"
+        params.append(f"%{LastName.strip().lower()}%")
     if Department:
-        query += " AND Department LIKE %s"
-        params.append(f"%{Department}%")
+        query += " AND LOWER(Department) LIKE %s"
+        params.append(f"%{Department.strip().lower()}%")
     if VehiclePlate:
-        query += " AND VehiclePlate LIKE %s"
-        params.append(f"%{VehiclePlate}%")
+        query += " AND LOWER(VehiclePlate) LIKE %s"
+        params.append(f"%{VehiclePlate.strip().lower()}%")
     if VehicleDescription:
-        query += " AND VehicleDescription LIKE %s"
-        params.append(f"%{VehicleDescription}%")
+        query += " AND LOWER(VehicleDescription) LIKE %s"
+        params.append(f"%{VehicleDescription.strip().lower()}%")
     if VehicleColour:
-        query += " AND VehicleColour LIKE %s"
-        params.append(f"%{VehicleColour}%")
+        query += " AND LOWER(VehicleColour) LIKE %s"
+        params.append(f"%{VehicleColour.strip().lower()}%")
     if VehicleMake:
-        query += " AND VehicleMake LIKE %s"
-        params.append(f"%{VehicleMake}%")
+        query += " AND LOWER(VehicleMake) LIKE %s"
+        params.append(f"%{VehicleMake.strip().lower()}%")
     if VehicleModel:
-        query += " AND VehicleModel LIKE %s"
-        params.append(f"%{VehicleModel}%")
+        query += " AND LOWER(VehicleModel) LIKE %s"
+        params.append(f"%{VehicleModel.strip().lower()}%")
     if StallNumber:
-        query += " AND StallNumber LIKE %s"
-        params.append(f"%{StallNumber}%")
+        query += " AND LOWER(StallNumber) LIKE %s"
+        params.append(f"%{StallNumber.strip().lower()}%")
     if NumberOfVehicles is not None:
         query += " AND NumberOfVehicles = %s"
         params.append(NumberOfVehicles)
