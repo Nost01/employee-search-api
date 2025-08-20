@@ -1,8 +1,8 @@
 Finalize Backend (FastAPI + MySQL)
-    Error handling (invalid queries don't crash things)
-    Pagination or filters (if database grows large)
-    CORS support (frontend talk to backend)
-    Unit tests to make sure searches work
+    Error handling (invalid queries don't crash things) 0.5/1
+    Pagination or filters (if database grows large) 0/1
+    CORS support (frontend talk to backend) 1/1
+    Unit tests to make sure searches work 0/1
 
 Database for Deployment
     For hosting, will need a cloud MySQL database

@@ -1,5 +1,6 @@
 # Create a FastAPI instance
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import mysql.connector
 import os
@@ -8,14 +9,41 @@ import uvicorn
 load_dotenv("variables.env")
 app = FastAPI(title="Employee Search API", description="API for searching employee details in a database")
 
-def get_db_connection():
-    return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", ""),
-        database=os.getenv("DB_NAME", "nesthealthcentre")
-    )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+def get_db_connection():
+    try:
+        conn = mysql.connector.connect(
+            host=os.getenv("DB_HOST", "localhost"),
+            user=os.getenv("DB_USER", "root"),
+            password=os.getenv("DB_PASSWORD", ""),
+            database=os.getenv("DB_NAME", "nesthealthcentre")
+        )
+        return conn
+    except mysql.connector.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database connection failed: {str(e)}")
+
+@app.get("/health")
+def health_check():
+    try: 
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1")
+        cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return {"status": "healthy", "db": "connected"}
+    except Exception as e:
+        return {"status": "error", "details": str(e)}
+
+        
+    
 # Search Endpoints
 
 @app.get("/search")
